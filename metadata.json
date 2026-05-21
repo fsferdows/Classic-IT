@@ -1,0 +1,6 @@
+{
+  "name": "Classic IT",
+  "description": "Multi-Tenant Enterprise ERP with Offline-First, MVI Point of Sale, inventory, CRM, accounting, and multi-shop analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
