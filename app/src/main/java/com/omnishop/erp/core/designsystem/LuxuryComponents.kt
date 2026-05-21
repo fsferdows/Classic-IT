@@ -17,9 +17,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
@@ -28,11 +31,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -442,3 +447,92 @@ fun LuxuryShimmerBox(
             )
     )
 }
+
+// --- REVOLUTIONARY 3D INTERACTIVE TILT & DYNAMIC GLARE HOVER MODIFIER ---
+// High-fidelity physical interactive touch mechanics translating CSS / React 3D tilt
+fun Modifier.tilt3d(
+    maxRotationX: Float = 14f,
+    maxRotationY: Float = 14f,
+    scaleOnTouch: Float = 1.04f
+): Modifier = composed {
+    var layoutSize by remember { mutableStateOf(IntSize.Zero) }
+    var rotationX by remember { mutableStateOf(0f) }
+    var rotationY by remember { mutableStateOf(0f) }
+    var scale by remember { mutableStateOf(1f) }
+    var glareOffset by remember { mutableStateOf<Offset?>(null) }
+
+    val animatedRotationX by animateFloatAsState(
+        targetValue = rotationX,
+        animationSpec = spring(dampingRatio = 0.65f, stiffness = Spring.StiffnessLow),
+        label = "3dTiltX"
+    )
+    val animatedRotationY by animateFloatAsState(
+        targetValue = rotationY,
+        animationSpec = spring(dampingRatio = 0.65f, stiffness = Spring.StiffnessLow),
+        label = "3dTiltY"
+    )
+    val animatedScale by animateFloatAsState(
+        targetValue = scale,
+        animationSpec = spring(dampingRatio = 0.75f, stiffness = Spring.StiffnessMedium),
+        label = "3dScale"
+    )
+
+    this
+        .onSizeChanged { layoutSize = it }
+        .pointerInput(Unit) {
+            awaitPointerEventScope {
+                while (true) {
+                    val event = awaitPointerEvent()
+                    if (layoutSize.width > 0 && layoutSize.height > 0) {
+                        val firstPosition = event.changes.firstOrNull()?.position
+                        
+                        // Check if pointer is currently pressed or hovering inside bounds
+                        val hasActivePointer = event.changes.any { it.pressed }
+                        
+                        if (hasActivePointer && firstPosition != null) {
+                            scale = scaleOnTouch
+                            // Relative offset (-1f to 1f) from center
+                            val centerX = layoutSize.width / 2f
+                            val centerY = layoutSize.height / 2f
+                            rotationX = -((firstPosition.y - centerY) / centerY).coerceIn(-1f, 1f) * maxRotationX
+                            rotationY = ((firstPosition.x - centerX) / centerX).coerceIn(-1f, 1f) * maxRotationY
+                            glareOffset = firstPosition
+                        } else {
+                            // Reset when touch/drag released
+                            scale = 1f
+                            rotationX = 0f
+                            rotationY = 0f
+                            glareOffset = null
+                        }
+                    }
+                }
+            }
+        }
+        .graphicsLayer {
+            rotationX = animatedRotationX
+            rotationY = animatedRotationY
+            scaleX = animatedScale
+            scaleY = animatedScale
+            cameraDistance = 15f * density
+        }
+        .drawWithContent {
+            drawContent()
+            // Metallic premium diagonal gloss flare that glides across the 3D surface
+            glareOffset?.let { offset ->
+                drawCircle(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.22f),
+                            Color.White.copy(alpha = 0.06f),
+                            Color.Transparent
+                        ),
+                        center = offset,
+                        radius = this.size.minDimension * 0.85f
+                    ),
+                    radius = this.size.minDimension * 0.85f,
+                    center = offset
+                )
+            }
+        }
+}
+

@@ -35,6 +35,7 @@ import com.omnishop.erp.core.data.local.ProductEntity
 import com.omnishop.erp.core.data.local.SaleEntity
 import com.omnishop.erp.core.data.local.ShopEntity
 import com.omnishop.erp.features.dashboard.DashboardViewModel
+import com.omnishop.erp.core.designsystem.tilt3d
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -305,20 +306,6 @@ fun PosProductCard(
     val isLowStock = product.stockQty <= product.lowStockThreshold
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val isPressed by interactionSource.collectIsPressedAsState()
-
-    val scale by animateFloatAsState(
-        targetValue = when {
-            isPressed -> 0.95f
-            isHovered -> 1.04f
-            else -> 1.0f
-        },
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioLowBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
-        label = "productCardScaleAnimation"
-    )
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = if (isHovered) 8.dp else 2.dp),
@@ -327,10 +314,7 @@ fun PosProductCard(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
+            .tilt3d(maxRotationX = 10f, maxRotationY = 10f, scaleOnTouch = 1.04f)
             .clickable(
                 interactionSource = interactionSource,
                 indication = androidx.compose.material3.ripple(color = MaterialTheme.colorScheme.primary),

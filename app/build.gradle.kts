@@ -11,7 +11,7 @@ android {
   compileSdk { version = release(36) { minorApiLevel = 1 } }
 
   defaultConfig {
-    applicationId = "com.omnishop.erp"
+    applicationId = "com.aistudio.omnishop.hqwyxt"
     minSdk = 24
     targetSdk = 36
     versionCode = 1

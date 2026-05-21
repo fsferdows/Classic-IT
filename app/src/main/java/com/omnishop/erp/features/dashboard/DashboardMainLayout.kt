@@ -271,6 +271,7 @@ fun AnalyticsDashboardTab(
         // Summary Quick Indicators beautifully rendered as premium stacked MetricCards
         item {
             MetricCard(
+                modifier = Modifier.tilt3d(),
                 title = "Total Revenue Earned",
                 value = "$${String.format("%.2f", totalRevenue)}",
                 icon = Icons.Default.TrendingUp,
@@ -281,6 +282,7 @@ fun AnalyticsDashboardTab(
         }
         item {
             MetricCard(
+                modifier = Modifier.tilt3d(),
                 title = "Ledgers & POS Invoices",
                 value = "$totalSalesHistoryCount Invoices Billed",
                 icon = Icons.Default.Receipt,
@@ -291,6 +293,7 @@ fun AnalyticsDashboardTab(
         }
         item {
             MetricCard(
+                modifier = Modifier.tilt3d(),
                 title = "Loyalty Directory",
                 value = "$customersCount Active Clients",
                 icon = Icons.Default.Star,
@@ -303,7 +306,9 @@ fun AnalyticsDashboardTab(
         // Beautiful Glassmorphic Cash flow chart!
         item {
             LuxCard(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .tilt3d(maxRotationX = 8f, maxRotationY = 8f),
                 variant = LuxCardVariant.Glass,
                 cornerRadius = 24.dp
             ) {
