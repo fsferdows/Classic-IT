@@ -44,13 +44,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
             val activeShop by dashboardViewModel.activeShop.collectAsState()
+            val isDarkTheme by prefs.darkThemeState.collectAsState()
             
             // Dynamic White labeling brand accent hex extraction
             val brandHex = activeShop?.primaryColor ?: ""
 
             var navigationState by remember { mutableStateOf("MAIN") }
 
-            OmniShopTheme(shopPrimaryHex = brandHex) {
+            OmniShopTheme(shopPrimaryHex = brandHex, darkTheme = isDarkTheme) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val ignoredPadding = innerPadding // Scaffold is full bleed for top bar edge-to-edge
                     
@@ -89,6 +90,8 @@ class MainActivity : ComponentActivity() {
                             staffViewModel = staffViewModel,
                             currentUserRole = role,
                             currentUserName = name,
+                            isDarkTheme = isDarkTheme,
+                            onThemeToggle = { targetDark -> prefs.setDarkTheme(targetDark) },
                             onOnboardNewShopClick = { navigationState = "ONBOARD_WIZARD" },
                             onLogoutClick = { authViewModel.logout() }
                         )

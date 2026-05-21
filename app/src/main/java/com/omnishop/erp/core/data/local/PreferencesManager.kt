@@ -14,6 +14,18 @@ class PreferencesManager(context: Context) {
     private val _selectedShopId = MutableStateFlow(getSelectedShopId())
     val selectedShopIdState: StateFlow<String> = _selectedShopId
 
+    private val _darkTheme = MutableStateFlow(isDarkTheme())
+    val darkThemeState: StateFlow<Boolean> = _darkTheme
+
+    fun isDarkTheme(): Boolean {
+        return prefs.getBoolean(KEY_DARK_THEME, true)
+    }
+
+    fun setDarkTheme(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_DARK_THEME, enabled).apply()
+        _darkTheme.value = enabled
+    }
+
     fun getSelectedShopId(): String {
         return prefs.getString(KEY_SELECTED_SHOP_ID, "") ?: ""
     }
@@ -61,5 +73,6 @@ class PreferencesManager(context: Context) {
         private const val KEY_USER_EMAIL = "user_email"
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_USER_ROLE = "user_role"
+        private const val KEY_DARK_THEME = "dark_theme"
     }
 }

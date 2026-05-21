@@ -43,19 +43,35 @@ fun OmniShopTheme(
         DefaultTeal
     }
 
-    val colorScheme = darkColorScheme(
-        primary = activeBrandColor,
-        secondary = activeBrandColor.copy(alpha = 0.85f),
-        tertiary = Color(0xFFFFB300),
-        background = Color(0xFF07080B),     // Ultra deep black
-        surface = Color(0xFF0F1016),        // Obsidian surface
-        onPrimary = Color.Black,
-        onSecondary = Color.Black,
-        onBackground = Color(0xFFF1F2F6),
-        onSurface = Color(0xFFF1F2F6),
-        surfaceVariant = Color(0xFF161722),  // Frosted depth level 1
-        onSurfaceVariant = Color(0xFFB5B7C3)
-    )
+    val colorScheme = if (darkTheme) {
+        darkColorScheme(
+            primary = activeBrandColor,
+            secondary = activeBrandColor.copy(alpha = 0.85f),
+            tertiary = Color(0xFFFFB300),
+            background = Color(0xFF07080B),     // Ultra deep black
+            surface = Color(0xFF0F1016),        // Obsidian surface
+            onPrimary = Color.Black,
+            onSecondary = Color.Black,
+            onBackground = Color(0xFFF1F2F6),
+            onSurface = Color(0xFFF1F2F6),
+            surfaceVariant = Color(0xFF161722),  // Frosted depth level 1
+            onSurfaceVariant = Color(0xFFB5B7C3)
+        )
+    } else {
+        lightColorScheme(
+            primary = activeBrandColor,
+            secondary = activeBrandColor.copy(alpha = 0.8f),
+            tertiary = Color(0xFFFFB300),
+            background = Color(0xFFF4F6F9),     // Clean corporate light slate background
+            surface = Color(0xFFFFFFFF),        // Card background
+            onPrimary = Color.White,
+            onSecondary = Color.White,
+            onBackground = Color(0xFF0F172A),     // Dark text
+            onSurface = Color(0xFF0F172A),
+            surfaceVariant = Color(0xFFEDF2F7),  // Soft grey secondary surface
+            onSurfaceVariant = Color(0xFF4A5568)
+        )
+    }
 
     MaterialTheme(
         colorScheme = colorScheme,

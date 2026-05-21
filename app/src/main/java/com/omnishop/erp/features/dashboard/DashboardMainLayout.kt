@@ -47,6 +47,8 @@ fun DashboardMainLayout(
     staffViewModel: StaffViewModel,
     currentUserRole: String,
     currentUserName: String,
+    isDarkTheme: Boolean,
+    onThemeToggle: (Boolean) -> Unit,
     onOnboardNewShopClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
@@ -132,6 +134,23 @@ fun DashboardMainLayout(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(end = 12.dp)
                     ) {
+                        // Dynamic Theme Mode Switch
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(end = 12.dp)
+                        ) {
+                            Text(
+                                text = if (isDarkTheme) "Dark" else "Light",
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.padding(end = 6.dp),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Switch(
+                                checked = isDarkTheme,
+                                onCheckedChange = onThemeToggle
+                            )
+                        }
+
                         Column(
                             horizontalAlignment = Alignment.End,
                             modifier = Modifier.padding(end = 8.dp)
